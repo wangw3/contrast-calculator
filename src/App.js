@@ -10,8 +10,7 @@ class App extends Component {
       rgb1: "",
       rgb2: "",
       l1: "",
-      l2: "",
-      result: ""
+      l2: ""
     }
     this.handleClick1 = this.handleClick1.bind(this);
     this.handleClick2 = this.handleClick2.bind(this);
