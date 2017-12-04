@@ -35,23 +35,23 @@ class App extends Component {
       return true;
   }
 
-  getSRGB () {
+  getSRGB (color, rgb) {
     let r_srgb, g_srgb, b_srgb;
-    if (this.state.color1.length === 6){
-      let color1 = this.state.color1.toLowerCase();
-      if (this.checkEachBit(color1)) {
-        r_srgb = parseInt( "0x" + color1.charAt(0) + color1.charAt(1), 16)/255;
-        g_srgb = parseInt( "0x" + color1.charAt(2) + color1.charAt(3), 16)/255;
-        b_srgb = parseInt( "0x" + color1.charAt(4) + color1.charAt(5), 16)/255;
+    if (color.length === 6){
+      let eachColor = color.toLowerCase();
+      if (this.checkEachBit(eachColor)) {
+        r_srgb = parseInt( "0x" + eachColor.charAt(0) + eachColor.charAt(1), 16)/255;
+        g_srgb = parseInt( "0x" + eachColor.charAt(2) + eachColor.charAt(3), 16)/255;
+        b_srgb = parseInt( "0x" + eachColor.charAt(4) + eachColor.charAt(5), 16)/255;
       }
     }
 
-    if (this.state.rgb1) {
-       const first_comma_index = this.state.rgb1.indexOf(',');
-       const second_comma_index = this.state.rgb1.indexOf(',', first_comma_index + 1 || 0);
-       r_srgb = parseInt(this.state.rgb1.slice(0, first_comma_index).replace("(", ""), 10)/255;
-       g_srgb = parseInt(this.state.rgb1.slice(first_comma_index + 1, second_comma_index), 10)/255;
-       b_srgb = parseInt(this.state.rgb1.slice(second_comma_index + 1).replace(")", ""), 10)/255;
+    if (rgb) {
+       const first_comma_index = rgb.indexOf(',');
+       const second_comma_index = rgb.indexOf(',', first_comma_index + 1 || 0);
+       r_srgb = parseInt(rgb.slice(0, first_comma_index).replace("(", ""), 10)/255;
+       g_srgb = parseInt(rgb.slice(first_comma_index + 1, second_comma_index), 10)/255;
+       b_srgb = parseInt(rgb.slice(second_comma_index + 1).replace(")", ""), 10)/255;
     }
     return [r_srgb, g_srgb, b_srgb];
   }
@@ -66,13 +66,13 @@ class App extends Component {
   }
 
   handleClick1 () {
-    let arrSRGB = this.getSRGB();
+    let arrSRGB = this.getSRGB(this.state.color1, this.state.rgb1);
     let luminance = this.calculateLuminance(arrSRGB);
     this.setState({l1: luminance});
   }
 
   handleClick2 () {
-    let arrSRGB = this.getSRGB();
+    let arrSRGB = this.getSRGB(this.state.color2, this.state.rgb2);
     let luminance = this.calculateLuminance(arrSRGB);
     this.setState({l2: luminance});
   }
