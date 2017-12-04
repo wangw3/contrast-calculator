@@ -2,7 +2,7 @@ This project aims to calculator contrast ratio* based on input color.
 
 The input can be either 6-bit hex numbers or rgb numbers seperate with comma.
 
-contrast ratio
+Contrast ratio
 
 Note 1: Contrast ratios can range from 1 to 21 (commonly written 1:1 to 21:1).
 
