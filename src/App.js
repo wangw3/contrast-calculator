@@ -7,8 +7,6 @@ class App extends Component {
     this.state = {
       color1: "",
       color2: "",
-      rgb1: "",
-      rgb2: "",
       l1: "",
       l2: ""
     }
@@ -19,9 +17,13 @@ class App extends Component {
   }
 
   checkEachBit (string) {
+      const ASCII_0 = 48;
+      const ASCII_9 = 57;
+      const ASCII_a = 97;
+      const ASCII_f = 102;
       for (let i=0;i<string.length;i++) {
-        if((string.charCodeAt(i) >=48 && string.charCodeAt(i) <= 57) ||
-           (string.charCodeAt(i) >=97 && string.charCodeAt(i) <= 102)
+        if((string.charCodeAt(i) >= ASCII_0 && string.charCodeAt(i) <= ASCII_9) ||
+           (string.charCodeAt(i) >= ASCII_a && string.charCodeAt(i) <= ASCII_f)
       )
       {
         // donothing
@@ -34,23 +36,23 @@ class App extends Component {
       return true;
   }
 
-  getSRGB (color, rgb) {
+  getSRGB (color) {
     let r_srgb, g_srgb, b_srgb;
-    if (color.length === 6){
-      let eachColor = color.toLowerCase();
-      if (this.checkEachBit(eachColor)) {
-        r_srgb = parseInt( "0x" + eachColor.charAt(0) + eachColor.charAt(1), 16)/255;
-        g_srgb = parseInt( "0x" + eachColor.charAt(2) + eachColor.charAt(3), 16)/255;
-        b_srgb = parseInt( "0x" + eachColor.charAt(4) + eachColor.charAt(5), 16)/255;
+    if (color.indexOf(",") === -1){
+      const colorCode = color.toLowerCase();
+      if (this.checkEachBit(colorCode)) {
+        r_srgb = parseInt( "0x" + colorCode.charAt(0) + colorCode.charAt(1), 16)/255;
+        g_srgb = parseInt( "0x" + colorCode.charAt(2) + colorCode.charAt(3), 16)/255;
+        b_srgb = parseInt( "0x" + colorCode.charAt(4) + colorCode.charAt(5), 16)/255;
       }
     }
 
-    if (rgb) {
-       const first_comma_index = rgb.indexOf(',');
-       const second_comma_index = rgb.indexOf(',', first_comma_index + 1 || 0);
-       r_srgb = parseInt(rgb.slice(0, first_comma_index).replace("(", ""), 10)/255;
-       g_srgb = parseInt(rgb.slice(first_comma_index + 1, second_comma_index), 10)/255;
-       b_srgb = parseInt(rgb.slice(second_comma_index + 1).replace(")", ""), 10)/255;
+    else {
+       const first_comma_index = color.indexOf(',');
+       const second_comma_index = color.indexOf(',', first_comma_index + 1 || 0);
+       r_srgb = parseInt(color.slice(0, first_comma_index).replace("(", ""), 10)/255;
+       g_srgb = parseInt(color.slice(first_comma_index + 1, second_comma_index), 10)/255;
+       b_srgb = parseInt(color.slice(second_comma_index + 1).replace(")", ""), 10)/255;
     }
     return [r_srgb, g_srgb, b_srgb];
   }
@@ -65,15 +67,19 @@ class App extends Component {
   }
 
   handleClick1 () {
-    let arrSRGB = this.getSRGB(this.state.color1, this.state.rgb1);
+    let arrSRGB = this.getSRGB(this.state.color1);
     let luminance = this.calculateLuminance(arrSRGB);
-    this.setState({l1: luminance});
+    this.setState({
+      l1: luminance
+    });
   }
 
   handleClick2 () {
-    let arrSRGB = this.getSRGB(this.state.color2, this.state.rgb2);
+    let arrSRGB = this.getSRGB(this.state.color2);
     let luminance = this.calculateLuminance(arrSRGB);
-    this.setState({l2: luminance});
+    this.setState({
+      l2: luminance
+    });
   }
 
   render() {
@@ -82,47 +88,31 @@ class App extends Component {
         <div className="App_title">
           Contrast Calculator
         </div>
+        <div>
+          The input can be either 6-bit hex numbers or rgb numbers with comma.
+        </div>
+        <div>
+          For example: "111111", "(100, 0, 0)", "100, 100, 100"
+        </div>
         <input
-              placeholder="color code 6 hex numbers"
+              placeholder="color code"
               type="text"
               value={this.state.color1}
               onChange={(event)=>{this.setState({
                 color1: event.target.value,
-                rgb1: "",
                 l1: ""
               })}}
         />
         <input
-              placeholder="color code 6 hex numbers"
+              placeholder="color code"
               type="text"
               value={this.state.color2}
               onChange={(event)=>{this.setState({
                 color2: event.target.value,
-                rgb2: "",
                 l2: ""
               })}}
         />
-        <br/>
-        <input
-              placeholder="color code rgb with comma"
-              type="text"
-              value={this.state.rgb1}
-              onChange={(event)=>{this.setState({
-                rgb1: event.target.value,
-                color1: "",
-                l1: ""
-              })}}
-        />
-        <input
-              placeholder="color code rgb with comma"
-              type="text"
-              value={this.state.rgb2}
-              onChange={(event)=>{this.setState({
-                rgb2: event.target.value,
-                color2: "",
-                l2: ""
-              })}}
-        />
+
         <br/>
         <button onClick={this.handleClick1}>Calculate</button>
         <button onClick={this.handleClick2}>Calculate</button>
@@ -132,7 +122,7 @@ class App extends Component {
           {this.state.l2 || this.state.l2===0? this.state.l2.toFixed(2): null}
           <br/>
           <div style={{color:"orange"}}>{
-            (this.state.l1 || this.state.l1===0)&& (this.state.l2 || this.state.l2===0)? this.state.l1 > this.state.l2?
+            (this.state.l1 || this.state.l1===0) && (this.state.l2 || this.state.l2===0)? this.state.l1 > this.state.l2?
             ((this.state.l1 + 0.05)/(this.state.l2 + 0.05)).toFixed(2):
             ((this.state.l2 + 0.05)/(this.state.l1 + 0.05)).toFixed(2):
             null
