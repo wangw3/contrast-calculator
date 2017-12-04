@@ -80,7 +80,7 @@ class App extends Component {
     return (
       <div className="App">
         <div className="App_title">
-        Contrast Calculator
+          Contrast Calculator
         </div>
         <input
               placeholder="color code 6 hex numbers"
